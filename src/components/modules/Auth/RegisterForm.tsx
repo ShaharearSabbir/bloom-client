@@ -19,7 +19,7 @@ import {
 import { Button } from "../../ui/button";
 import { useState } from "react";
 import * as z from "zod";
-import { authClient } from "@/lib/auth-client";
+import { auth } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 const registerSchema = z.object({
@@ -50,7 +50,7 @@ const RegisterForm = () => {
         return;
       }
       const toastId = toast.loading("Creating account...");
-      const res = await authClient.signUp.email(value);
+      const res = await auth.signUp.email(value);
 
       if (res.error) {
         toast.error(res.error.message, { id: toastId });

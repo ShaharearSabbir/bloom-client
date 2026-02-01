@@ -12,7 +12,7 @@ import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { useState } from "react";
 import * as z from "zod";
-import { authClient } from "@/lib/auth-client";
+import { auth } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 const registerSchema = z.object({
@@ -32,14 +32,14 @@ const LoginForm = () => {
       onSubmit: registerSchema,
     },
     onSubmit: async ({ value }) => {
-      const res = await authClient.signIn.email({
+      const res = await auth.signIn.email({
         ...value,
         callbackURL: "http://localhost:3000",
       });
 
       if (res.error) {
         if (res.error.message === "Email not verified") {
-          await authClient.sendVerificationEmail({
+          await auth.sendVerificationEmail({
             email: value.email,
           });
           toast.error(

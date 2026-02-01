@@ -27,6 +27,9 @@ import {
 } from "@/components/ui/sheet";
 import { ModeToggle } from "./ModeToggle";
 import Link from "next/link";
+import AuthNav from "./AuthNav";
+import Image from "next/image";
+import logo from "@/assets/logo.png";
 
 interface Navbar5Props {
   className?: string;
@@ -70,15 +73,13 @@ const Navbar = ({ className }: Navbar5Props) => {
     <section className={cn("py-4", className)}>
       <div className="container mx-auto">
         <nav className="flex items-center justify-between">
-          <a
+          <Link
             href="https://www.shadcnblocks.com"
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2"
           >
-            <p className="max-h-8">Logo</p>
-            <span className="text-lg font-semibold tracking-tighter">
-              Bloom
-            </span>
-          </a>
+            <Image src={logo} alt="logo" width={40} height={40} />
+            <h3 className="text-3xl font-semibold tracking-tighter">Bloom</h3>
+          </Link>
           <NavigationMenu className="hidden lg:block">
             <NavigationMenuList>
               <NavigationMenuItem>
@@ -131,12 +132,7 @@ const Navbar = ({ className }: Navbar5Props) => {
             </NavigationMenuList>
           </NavigationMenu>
           <div className="hidden items-center gap-4 lg:flex">
-            <Button variant="outline">
-              <Link href={"/login"}>Login</Link>
-            </Button>
-            <Button>
-              <Link href={"/register"}>Get started</Link>
-            </Button>
+            <AuthNav />
             <ModeToggle />
           </div>
           <Sheet>

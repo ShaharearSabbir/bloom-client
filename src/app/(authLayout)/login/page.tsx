@@ -1,3 +1,4 @@
+import GoogleLogin from "@/components/modules/Auth/GoogleLogin";
 import LoginForm from "@/components/modules/Auth/LoginForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,10 +29,8 @@ export default function LoginPage() {
       <CardContent>
         <LoginForm />
       </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <Button variant="outline" className="w-full">
-          Continue with google
-        </Button>
+      <CardFooter>
+        <GoogleLogin className="w-full" />
       </CardFooter>
     </Card>
   );

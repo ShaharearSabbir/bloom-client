@@ -1,3 +1,4 @@
+import GoogleLogin from "@/components/modules/Auth/GoogleLogin";
 import RegisterForm from "@/components/modules/Auth/RegisterForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,9 +30,7 @@ export default function RegisterPage() {
         <RegisterForm />
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button variant="outline" className="w-full">
-          Continue with google
-        </Button>
+        <GoogleLogin className="w-full" />
       </CardFooter>
     </Card>
   );
