@@ -5,12 +5,8 @@ import { UserRole } from "./types/userRole";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const res = await userServices.getSelection();
+  const res = await userServices.getSession();
   const user = res.data.user;
-
-  console.log(res);
-
-  console.log(user);
 
   if (!user) {
     return NextResponse.redirect(new URL("/login", request.url));

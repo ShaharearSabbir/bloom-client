@@ -50,7 +50,10 @@ const RegisterForm = () => {
         return;
       }
       const toastId = toast.loading("Creating account...");
-      const res = await auth.signUp.email(value);
+      const res = await auth.signUp.email({
+        ...value,
+        callbackURL: "http://localhost:3000/login",
+      });
 
       if (res.error) {
         toast.error(res.error.message, { id: toastId });

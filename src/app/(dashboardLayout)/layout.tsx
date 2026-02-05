@@ -6,6 +6,8 @@ import {
   Settings,
 } from "lucide-react";
 
+import logo from "@/assets/logo.png";
+
 import { cn } from "@/lib/utils";
 
 import {
@@ -33,8 +35,16 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import Image, { StaticImageData } from "next/image";
+import { Blob } from "buffer";
+import userServices from "@/services/user.service";
+import { UserRole } from "@/types/userRole";
+import adminRouteItems from "@/routes/adminRoutes";
+import tutorRouteItems from "@/routes/tutorRoutes";
+import studentRouteItems from "@/routes/studentRoutes";
+import { DynamicBreadcrumbs } from "@/components/modules/dashboard/DynamicBreadcrumb";
 
-type NavItem = {
+export type NavItem = {
   label: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   href: string;
@@ -48,7 +58,7 @@ type NavGroup = {
 
 type SidebarData = {
   logo: {
-    src: string;
+    src: StaticImageData;
     alt: string;
     title: string;
     description: string;
@@ -57,26 +67,25 @@ type SidebarData = {
   footerGroup: NavGroup;
 };
 
+const res = await userServices.getSession();
+const user = res.data.user;
+
 const sidebarData: SidebarData = {
   logo: {
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblocks-logo.svg",
-    alt: "Shadcnblocks",
-    title: "Shadcnblocks",
-    description: "Build your app",
+    src: logo,
+    alt: "Bloom Logo",
+    title: "Bloom",
+    description: "Sharing Knowledge with Bloom",
   },
   navGroups: [
     {
-      title: "Overview",
-      items: [
-        {
-          label: "Dashboard",
-          icon: LayoutDashboard,
-          href: "#",
-          isActive: true,
-        },
-        { label: "Tasks", icon: ClipboardList, href: "#" },
-        { label: "Roadmap", icon: BarChart3, href: "#" },
-      ],
+      title: "Main Menu",
+      items:
+        user.role === UserRole.ADMIN
+          ? adminRouteItems
+          : user.role === UserRole.TUTOR
+            ? tutorRouteItems
+            : studentRouteItems,
     },
   ],
   footerGroup: {
@@ -93,10 +102,12 @@ const SidebarLogo = ({ logo }: { logo: SidebarData["logo"] }) => {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton size="lg">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-sm bg-primary">
-            <img
+          <div className="flex aspect-square size-8 items-center justify-center rounded-sm">
+            <Image
               src={logo.src}
               alt={logo.alt}
+              width={32}
+              height={32}
               className="size-6 text-primary-foreground invert dark:invert-0"
             />
           </div>
@@ -180,17 +191,7 @@ const DashboardLayout = ({
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Overview</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Dashboard</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <DynamicBreadcrumbs />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
           {admin}

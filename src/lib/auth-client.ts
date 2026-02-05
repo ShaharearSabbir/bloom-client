@@ -12,6 +12,7 @@ export const auth = createAuthClient({
         },
         status: {
           type: "string",
+          required: false,
         },
       },
     }),

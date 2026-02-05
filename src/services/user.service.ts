@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 
 const userServices = {
-  getSelection: async () => {
+  getSession: async () => {
     try {
       const cookiesStore = await cookies();
       const res = await fetch(
