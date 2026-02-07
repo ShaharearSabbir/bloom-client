@@ -18,7 +18,7 @@ const tutorService = {
     return await tutors.json();
   },
 
-  createTutor: async (tutor: Partial<Tutor>) => {
+  createTutor: async (tutor: Omit<Tutor, "tutorId">) => {
     const res = await fetch(`${process.env.BACKEND_URL}/api/tutors`, {
       method: "POST",
       headers: {

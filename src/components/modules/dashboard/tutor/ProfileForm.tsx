@@ -28,18 +28,23 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { useForm } from "@tanstack/react-form";
+import { useState } from "react";
+import { createTutor, updateTutor } from "@/actions/tutor.Action";
+import { Tutor } from "@/types/tutor";
 
 const profileSchema = z.object({
-  category: z.string().min(1, "Category is required"),
+  categoryId: z.string().min(1, "Category is required"),
   hourlyRate: z.number().min(1, "Hourly rate is required"),
   profession: z.string().min(1, "Profession is required"),
   bio: z.string().min(1, "Bio is required"),
 });
 
 export default function ProfileForm() {
+  const [isExist, setIsExist] = useState<boolean>(false);
+
   const form = useForm({
     defaultValues: {
-      category: "",
+      categoryId: "",
       hourlyRate: 0,
       profession: "",
       bio: "",
@@ -48,16 +53,11 @@ export default function ProfileForm() {
       onSubmit: profileSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-      return;
+      let res;
 
-      const res = await fetch(`${process.env.BACKEND_URL}/api/profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(value),
-      });
+      isExist
+        ? (res = await updateTutor(value))
+        : (res = await createTutor(value));
     },
   });
 
@@ -75,14 +75,14 @@ export default function ProfileForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <form.Field
-                  name="category"
+                  name="categoryId"
                   children={(field) => {
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid;
                     return (
                       <Field data-invalid={isInvalid}>
                         <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-                        <Select onValueChange={e=> form.handleSubmit(e)}>
+                        <Select onValueChange={(e) => form.handleSubmit(e)}>
                           <SelectTrigger className="bg-background">
                             <SelectValue placeholder="Select a subject" />
                           </SelectTrigger>
@@ -141,7 +141,8 @@ export default function ProfileForm() {
 
             <div className="flex justify-end pt-4">
               <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 px-8">
-                <Save className="w-4 h-4" /> Save Changes
+                <Save className="w-4 h-4" />{" "}
+                {isExist ? "Save Changes" : "Create Tutor Profile"}
               </Button>
             </div>
           </FieldGroup>
