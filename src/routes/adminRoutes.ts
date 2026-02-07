@@ -13,7 +13,11 @@ const adminRouteItems: NavItem[] = [
     icon: LayoutDashboard,
     href: "admin-dashboard/users",
   },
+  {
+    label: "Create Category",
+    icon: LayoutDashboard,
+    href: "admin-dashboard/create-category",
+  },
 ];
 
-
-export default adminRouteItems
+export default adminRouteItems;
