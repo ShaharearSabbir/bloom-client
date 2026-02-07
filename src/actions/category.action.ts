@@ -19,3 +19,15 @@ export const createCategory = async (
     };
   }
 };
+
+export const getCategories = async () => {
+  try {
+    const result = await categoryService.getCategories();
+    return { data: result, error: null };
+  } catch (error) {
+    return {
+      data: null,
+      error: { message: "Failed to get categories", error },
+    };
+  }
+};

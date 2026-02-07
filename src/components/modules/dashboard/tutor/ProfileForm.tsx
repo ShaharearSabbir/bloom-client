@@ -1,6 +1,16 @@
 "use client";
 
-import { Save, User, DollarSign, BookOpen, GraduationCap } from "lucide-react";
+import { use } from "react";
+import { useForm } from "@tanstack/react-form";
+import * as z from "zod";
+import {
+  Save,
+  User,
+  DollarSign,
+  GraduationCap,
+  BookOpen,
+  Loader2,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -18,19 +28,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { toast } from "sonner";
-import * as z from "zod";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { useForm } from "@tanstack/react-form";
-import { useState } from "react";
 import { createTutor, updateTutor } from "@/actions/tutor.Action";
-import { Tutor } from "@/types/tutor";
+import { Category } from "@/types/category";
+import { toast } from "sonner";
 
 const profileSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
@@ -39,25 +45,42 @@ const profileSchema = z.object({
   bio: z.string().min(1, "Bio is required"),
 });
 
-export default function ProfileForm() {
-  const [isExist, setIsExist] = useState<boolean>(false);
+export default function ProfileForm({
+  tutorPromise,
+  categoryPromise,
+}: {
+  tutorPromise: Promise<any>;
+  categoryPromise: Promise<any>;
+}) {
+  // 1. Resolve the data using React's 'use' hook
+  const result = use(tutorPromise);
+  console.log(result);
+  const existingData = result?.data.data;
+  const isExist = !!existingData;
+
+  console.log(isExist);
+
+  const categoryResult = use(categoryPromise);
+  const categories: Category[] = categoryResult?.data.data;
 
   const form = useForm({
     defaultValues: {
-      categoryId: "",
-      hourlyRate: 0,
-      profession: "",
-      bio: "",
+      categoryId: existingData?.categoryId || "",
+      hourlyRate: existingData?.hourlyRate || 0,
+      profession: existingData?.profession || "",
+      bio: existingData?.bio || "",
     },
     validators: {
       onSubmit: profileSchema,
     },
     onSubmit: async ({ value }) => {
-      let res;
+      const res = isExist ? await updateTutor(value) : await createTutor(value);
 
-      isExist
-        ? (res = await updateTutor(value))
-        : (res = await createTutor(value));
+      if (!res.data?.success) {
+        toast.error(res.data.message);
+      }
+
+      toast.success(res.data.message);
     },
   });
 
@@ -70,80 +93,131 @@ export default function ProfileForm() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <form>
-          <FieldGroup>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <FieldGroup className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <form.Field
-                  name="categoryId"
-                  children={(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-                        <Select onValueChange={(e) => form.handleSubmit(e)}>
-                          <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="Select a subject" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="web-dev">
-                              Web Development
-                            </SelectItem>
-                            <SelectItem value="data-science">
-                              Data Science
-                            </SelectItem>
-                            <SelectItem value="math">Mathematics</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                />
-              </div>
+              {/* Category Field */}
+              <form.Field
+                name="categoryId"
+                children={(field) => (
+                  <Field className="space-y-2">
+                    <FieldLabel className="flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-emerald-500" /> Category
+                    </FieldLabel>
+                    <Select
+                      defaultValue={existingData ? existingData.categoryId : ""}
+                      value={field.state.value}
+                      onValueChange={(val) => field.handleChange(val)}
+                    >
+                      <SelectTrigger className="bg-background">
+                        <SelectValue placeholder="Select a subject" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories?.map((c: Category) => (
+                          <SelectItem key={c.categoryId} value={c.categoryId}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {field.state.meta.errors.length > 0 && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )}
+              />
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-emerald-500" /> Hourly
-                  Rate ($)
-                </label>
-                <Input
-                  type="number"
-                  placeholder="0.00"
-                  className="bg-background"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-semibold flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-emerald-500" />{" "}
-                Professional Title
-              </label>
-              <Input
-                placeholder="e.g. Senior Fullstack Developer"
-                className="bg-background"
+              {/* Hourly Rate Field */}
+              <form.Field
+                name="hourlyRate"
+                children={(field) => (
+                  <Field className="space-y-2">
+                    <FieldLabel className="flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-emerald-500" /> Hourly
+                      Rate ($)
+                    </FieldLabel>
+                    <Input
+                      type="number"
+                      value={field.state.value}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
+                      className="bg-background"
+                    />
+                    {field.state.meta.errors.length > 0 && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                )}
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold flex items-center gap-2">
-                <User className="w-4 h-4 text-emerald-500" /> About Me
-              </label>
-              <Textarea
-                placeholder="Describe your teaching style and experience..."
-                className="min-h-[150px] bg-background resize-none"
-              />
-            </div>
+            {/* Profession Field */}
+            <form.Field
+              name="profession"
+              children={(field) => (
+                <Field className="space-y-2">
+                  <FieldLabel className="flex items-center gap-2">
+                    <GraduationCap className="w-4 h-4 text-emerald-500" />{" "}
+                    Professional Title
+                  </FieldLabel>
+                  <Input
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. Senior Fullstack Developer"
+                    className="bg-background"
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <FieldError errors={field.state.meta.errors} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* Bio Field */}
+            <form.Field
+              name="bio"
+              children={(field) => (
+                <Field className="space-y-2">
+                  <FieldLabel className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-emerald-500" /> About Me
+                  </FieldLabel>
+                  <Textarea
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Describe your teaching style..."
+                    className="min-h-[150px] bg-background resize-none"
+                  />
+                  {field.state.meta.errors.length > 0 && (
+                    <FieldError errors={field.state.meta.errors} />
+                  )}
+                </Field>
+              )}
+            />
 
             <div className="flex justify-end pt-4">
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 px-8">
-                <Save className="w-4 h-4" />{" "}
-                {isExist ? "Save Changes" : "Create Tutor Profile"}
-              </Button>
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
+                children={([canSubmit, isSubmitting]) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || isSubmitting}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 px-8"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    {isExist ? "Save Changes" : "Create Tutor Profile"}
+                  </Button>
+                )}
+              />
             </div>
           </FieldGroup>
         </form>

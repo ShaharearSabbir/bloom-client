@@ -14,10 +14,8 @@ export default function GoogleLogin({ className }: { className?: string }) {
     await auth.signIn.social({
       provider: "google",
       callbackURL: "http://localhost:3000",
-      fetchOptions: {
-        query: {
-          role: selectedRole,
-        },
+      additionalData: {
+        role: selectedRole,
       },
     });
   };

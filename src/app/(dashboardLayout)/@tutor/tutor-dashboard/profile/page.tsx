@@ -1,12 +1,19 @@
 import ProfileForm from "@/components/modules/dashboard/tutor/ProfileForm";
 import ProfileHeader from "@/components/modules/dashboard/tutor/ProfileHeader";
 import userServices from "@/services/user.service";
+import { getMyTutor } from "@/actions/tutor.Action"; // Import your action
 import Image from "next/image";
+import { Suspense } from "react";
+import { getCategories } from "@/actions/category.action";
 
 export default async function TutorProfilePage() {
   const session = await userServices.getSession();
-
   const user = session.data.user;
+
+  // 1. Initiate the promise for the tutor data (don't await it here)
+  const tutorPromise = getMyTutor();
+
+  const categoryPromise = getCategories();
 
   const createdAt = new Date(user.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -21,15 +28,14 @@ export default async function TutorProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Side: Avatar and Quick Stats */}
         <div className="space-y-6">
-          {/* You can add a separate AvatarUpload component here later */}
           <div className="bg-card rounded-xl p-6 border shadow-sm flex flex-col items-center text-center">
-            <div className="w-32 h-32 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-4xl font-bold mb-4 border-2 border-emerald-500/20">
+            <div className="w-32 h-32 rounded-full overflow-hidden bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-4xl font-bold mb-4 border-2 border-emerald-500/20 relative">
               {user.image ? (
                 <Image
                   src={user.image}
-                  height={100}
-                  width={100}
-                  alt={(user.name, "avatar")}
+                  fill // Use fill for profile containers
+                  className="object-cover"
+                  alt={`${user.name}'s avatar`}
                 />
               ) : (
                 user.name.charAt(0)
@@ -44,9 +50,24 @@ export default async function TutorProfilePage() {
 
         {/* Right Side: The Interactive Form */}
         <div className="lg:col-span-2">
-          <ProfileForm />
+          {/* 2. Wrap in Suspense and pass the promise */}
+          <Suspense fallback={<ProfileFormSkeleton />}>
+            <ProfileForm
+              tutorPromise={tutorPromise}
+              categoryPromise={categoryPromise}
+            />
+          </Suspense>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Simple Skeleton for the loading state
+function ProfileFormSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="h-[400px] bg-muted rounded-xl w-full" />
     </div>
   );
 }

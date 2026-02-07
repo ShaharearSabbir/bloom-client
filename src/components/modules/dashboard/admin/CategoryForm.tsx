@@ -10,6 +10,7 @@ import { Save, Loader2, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Field, FieldError } from "@/components/ui/field";
 import { createCategory } from "@/actions/category.action";
+import { toast } from "sonner";
 
 const categorySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -35,9 +36,16 @@ export default function CategoryForm() {
     onSubmit: async ({ value }) => {
       try {
         const res = await createCategory(value);
-        console.log(res);
+
+        if (!res.data?.success) {
+          toast.error(res.data.message);
+        }
+
+        toast.success(res.data.message);
+
+        form.reset();
       } catch (error) {
-        console.log(error);
+        toast.error("Something went wrong");
       }
     },
   });
