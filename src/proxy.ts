@@ -6,7 +6,7 @@ import { UserRole } from "./types/userRole";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const res = await userServices.getSession();
-  const user = res.data.user;
+  const user = res.data?.user;
 
   if (!user) {
     return NextResponse.redirect(new URL("/login", request.url));

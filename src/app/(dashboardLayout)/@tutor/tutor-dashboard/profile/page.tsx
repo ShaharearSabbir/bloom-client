@@ -1,7 +1,19 @@
 import ProfileForm from "@/components/modules/dashboard/tutor/ProfileForm";
 import ProfileHeader from "@/components/modules/dashboard/tutor/ProfileHeader";
+import userServices from "@/services/user.service";
+import Image from "next/image";
 
-export default function TutorProfilePage() {
+export default async function TutorProfilePage() {
+  const session = await userServices.getSession();
+
+  const user = session.data.user;
+
+  const createdAt = new Date(user.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
       <ProfileHeader />
@@ -12,11 +24,20 @@ export default function TutorProfilePage() {
           {/* You can add a separate AvatarUpload component here later */}
           <div className="bg-card rounded-xl p-6 border shadow-sm flex flex-col items-center text-center">
             <div className="w-32 h-32 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-4xl font-bold mb-4 border-2 border-emerald-500/20">
-              T
+              {user.image ? (
+                <Image
+                  src={user.image}
+                  height={100}
+                  width={100}
+                  alt={(user.name, "avatar")}
+                />
+              ) : (
+                user.name.charAt(0)
+              )}
             </div>
-            <h3 className="font-bold text-xl">Tutor Name</h3>
+            <h3 className="font-bold text-xl">{user.name}</h3>
             <p className="text-sm text-muted-foreground">
-              Joined Bloom Jan 2026
+              Joined Bloom {createdAt}
             </p>
           </div>
         </div>

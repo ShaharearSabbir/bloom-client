@@ -1,23 +1,9 @@
-import {
-  BarChart3,
-  ClipboardList,
-  HelpCircle,
-  LayoutDashboard,
-  Settings,
-} from "lucide-react";
+import { HelpCircle, Settings } from "lucide-react";
 
 import logo from "@/assets/logo.png";
 
 import { cn } from "@/lib/utils";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -36,13 +22,15 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Image, { StaticImageData } from "next/image";
-import { Blob } from "buffer";
 import userServices from "@/services/user.service";
 import { UserRole } from "@/types/userRole";
 import adminRouteItems from "@/routes/adminRoutes";
 import tutorRouteItems from "@/routes/tutorRoutes";
 import studentRouteItems from "@/routes/studentRoutes";
 import { DynamicBreadcrumbs } from "@/components/modules/dashboard/DynamicBreadcrumb";
+import Link from "next/link";
+import Logout from "@/components/modules/dashboard/Logout";
+import { redirect } from "next/navigation";
 
 export type NavItem = {
   label: string;
@@ -69,6 +57,10 @@ type SidebarData = {
 
 const res = await userServices.getSession();
 const user = res.data.user;
+
+if (!user) {
+  redirect("/login");
+}
 
 const sidebarData: SidebarData = {
   logo: {
@@ -126,9 +118,11 @@ const SidebarLogo = ({ logo }: { logo: SidebarData["logo"] }) => {
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar {...props}>
-      <SidebarHeader>
-        <SidebarLogo logo={sidebarData.logo} />
-      </SidebarHeader>
+      <Link href={"/"}>
+        <SidebarHeader>
+          <SidebarLogo logo={sidebarData.logo} />
+        </SidebarHeader>
+      </Link>
       <SidebarContent>
         {sidebarData.navGroups.map((group) => (
           <SidebarGroup key={group.title}>
@@ -159,6 +153,11 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Logout className="w-full" />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
