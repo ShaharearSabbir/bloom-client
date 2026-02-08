@@ -23,8 +23,6 @@ const categoryService = {
       body: JSON.stringify(category),
     });
 
-    console.log(res);
-
     return await res.json();
   },
 };

@@ -52,13 +52,9 @@ export default function ProfileForm({
   tutorPromise: Promise<any>;
   categoryPromise: Promise<any>;
 }) {
-  // 1. Resolve the data using React's 'use' hook
   const result = use(tutorPromise);
-  console.log(result);
   const existingData = result?.data.data;
   const isExist = !!existingData;
-
-  console.log(isExist);
 
   const categoryResult = use(categoryPromise);
   const categories: Category[] = categoryResult?.data.data;

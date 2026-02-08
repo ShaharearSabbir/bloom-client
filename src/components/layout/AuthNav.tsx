@@ -20,8 +20,6 @@ const AuthNav = () => {
   const user = auth.useSession().data?.user;
   const isMobile = useIsMobile()
 
-  console.log(user);
-
   if (!user) {
     return (
       <div className="flex items-center gap-2">

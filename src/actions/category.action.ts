@@ -9,8 +9,6 @@ export const createCategory = async (
   try {
     const result = await categoryService.createCategory(category);
 
-    console.log(result);
-
     return { data: result, error: null };
   } catch (error) {
     return {
