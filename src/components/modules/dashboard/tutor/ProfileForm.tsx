@@ -53,7 +53,7 @@ export default function ProfileForm({
   categoryPromise: Promise<any>;
 }) {
   const result = use(tutorPromise);
-  const existingData = result?.data.data;
+  const existingData = result?.data?.data;
   const isExist = !!existingData;
 
   const categoryResult = use(categoryPromise);

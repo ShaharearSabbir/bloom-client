@@ -1,5 +1,4 @@
 import { Tutor } from "@/types/tutor";
-import { get } from "http";
 import { cookies } from "next/headers";
 
 const tutorService = {

@@ -24,8 +24,17 @@ export const updateTutor = async (tutor: Partial<Tutor>) => {
 export const getMyTutor = async () => {
   try {
     const result = await tutorService.getMyTutor();
-    return { data: result, error: null }
+    return { data: result, error: null };
   } catch (error) {
-    return { data: null, error: { message: "Failed to get my tutor", error } }
+    return { data: null, error: { message: "Failed to get my tutor", error } };
+  }
+};
+
+export const getTutors = async () => {
+  try {
+    const result = await tutorService.getTutors();
+    return { data: result, error: null };
+  } catch (error) {
+    return { data: null, error: { message: "Failed to get tutors", error } };
   }
 };
