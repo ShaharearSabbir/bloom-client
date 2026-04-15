@@ -1,7 +1,9 @@
 "use server";
 
-import categoryService from "@/services/category.service";
-import { Category } from "@/types/category";
+import categoryService, {
+  GetCategoriesServiceResponse,
+} from "@/services/category.service";
+import { Category } from "@/types/category.type";
 
 export const createCategory = async (
   category: Omit<Category, "categoryId">,
@@ -18,10 +20,25 @@ export const createCategory = async (
   }
 };
 
-export const getCategories = async () => {
+interface GetCategories {
+  data: GetCategoriesServiceResponse["data"] | null;
+  error: {
+    message: string;
+    error?: any;
+  } | null;
+}
+
+export const getCategories = async (): Promise<GetCategories> => {
   try {
     const result = await categoryService.getCategories();
-    return { data: result, error: null };
+    if (!result.success) {
+      return {
+        data: null,
+        error: { message: "Failed to get categories", error: result.message },
+      };
+    } else {
+      return { data: result.data, error: null };
+    }
   } catch (error) {
     return {
       data: null,

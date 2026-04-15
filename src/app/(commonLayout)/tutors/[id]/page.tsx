@@ -1,0 +1,252 @@
+// src/app/tutors/[id]/page.tsx
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Star,
+  CheckCircle2,
+  Clock,
+  BookOpen,
+  ShieldCheck,
+  MessageSquare,
+  Globe,
+  Award,
+} from "lucide-react";
+import Link from "next/link";
+import { getTutorDetails } from "@/actions/tutor.Action";
+
+export default async function TutorDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const tutorData = await getTutorDetails(id);
+  const tutor = tutorData.data;
+
+  if (!tutor) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-muted-foreground">Tutor profile not found.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-zinc-950">
+      {/* --- HERO SECTION --- */}
+      <div className="relative border-b bg-zinc-50/50 dark:bg-zinc-900/20 pt-10 pb-16">
+        <div className="container mx-auto px-4">
+          <nav className="flex mb-8 text-xs uppercase tracking-widest text-muted-foreground">
+            <Link
+              href="/tutors"
+              className="hover:text-emerald-600 transition-colors"
+            >
+              Directory
+            </Link>
+            <span className="mx-2">/</span>
+            <span className="text-foreground">{tutor.name}</span>
+          </nav>
+
+          <div className="flex flex-col lg:flex-row gap-10 items-end lg:items-center">
+            <Avatar className="h-32 w-32 lg:h-48 lg:w-48 rounded-2xl shadow-2xl ring-4 ring-white dark:ring-zinc-900">
+              <AvatarImage
+                src={tutor.avatarUrl}
+                alt={tutor.name}
+                className="object-cover"
+              />
+              <AvatarFallback className="text-4xl">
+                {tutor.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="flex-1 space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-4xl lg:text-5xl font-black tracking-tighter">
+                    {tutor.name}
+                  </h1>
+                  {tutor.isVerified && (
+                    <Badge className="bg-emerald-500 hover:bg-emerald-500 text-white border-none rounded-full p-1">
+                      <CheckCircle2 className="h-5 w-5" />
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-xl text-muted-foreground font-medium max-w-2xl italic">
+                  &quot;Mastering {tutor.category} through personalized,
+                  goal-oriented mentorship.&quot;
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-6 text-sm font-semibold">
+                <div className="flex items-center gap-2">
+                  <Star className="h-5 w-5 text-amber-500 fill-current" />
+                  <span>
+                    {tutor.rating}{" "}
+                    <span className="text-muted-foreground font-normal">
+                      ({tutor.totalReviews} reviews)
+                    </span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-blue-500" />
+                  <span>Bengali, English</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-purple-500" />
+                  <span>Verified Expert</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* --- MAIN CONTENT GRID --- */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Left Side: Story & Expertise */}
+          <div className="lg:col-span-8 space-y-12">
+            {/* Highlights Bento */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-4 rounded-xl border bg-zinc-50 dark:bg-zinc-900/50">
+                <p className="text-xs font-bold uppercase text-muted-foreground mb-1">
+                  Price
+                </p>
+                <p className="text-xl font-bold">${tutor.hourlyRate}/hr</p>
+              </div>
+              <div className="p-4 rounded-xl border bg-zinc-50 dark:bg-zinc-900/50">
+                <p className="text-xs font-bold uppercase text-muted-foreground mb-1">
+                  Subject
+                </p>
+                <p className="text-xl font-bold truncate">{tutor.category}</p>
+              </div>
+              <div className="p-4 rounded-xl border bg-zinc-50 dark:bg-zinc-900/50">
+                <p className="text-xs font-bold uppercase text-muted-foreground mb-1">
+                  Experience
+                </p>
+                <p className="text-xl font-bold">5+ Years</p>
+              </div>
+              <div className="p-4 rounded-xl border bg-zinc-50 dark:bg-zinc-900/50">
+                <p className="text-xs font-bold uppercase text-muted-foreground mb-1">
+                  Response
+                </p>
+                <p className="text-xl font-bold">~1hr</p>
+              </div>
+            </div>
+
+            <section className="space-y-6">
+              <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+                <div className="h-8 w-1 bg-emerald-500 rounded-full" />
+                The Mentorship Approach
+              </h2>
+              <div className="prose prose-zinc dark:prose-invert max-w-none">
+                <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-400 whitespace-pre-line">
+                  {tutor.bio}
+                </p>
+              </div>
+            </section>
+
+            {/* Teaching Features */}
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+              <div className="flex gap-4 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <div className="h-10 w-10 shrink-0 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-base">Flexible Scheduling</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Book sessions that fit your timezone and lifestyle.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <div className="h-10 w-10 shrink-0 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                  <MessageSquare className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-base">Direct Communication</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Get 24/7 support via built-in secure messaging.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* Right Side: Booking Card */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-28 space-y-6">
+              <Card className="border-2 border-zinc-100 dark:border-zinc-800 shadow-2xl rounded-[2rem] overflow-hidden">
+                <CardContent className="p-8 space-y-6">
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+                      Rate
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-4xl font-black">
+                        ${tutor.hourlyRate}
+                      </span>
+                      <span className="text-muted-foreground font-medium">
+                        per hour
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-4">
+                    <Button className="w-full h-14 rounded-2xl text-lg font-bold bg-zinc-950 dark:bg-white dark:text-zinc-950 hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all">
+                      Book a Session
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full h-14 rounded-2xl text-lg font-bold border-2"
+                    >
+                      Send Message
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4 pt-6">
+                    <div className="flex items-center gap-3 text-sm font-medium">
+                      <ShieldCheck className="h-5 w-5 text-emerald-500" />
+                      <span>Bloom Payment Protection</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm font-medium">
+                      <Star className="h-5 w-5 text-amber-500" />
+                      <span>Top Rated Educator</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="p-6 rounded-[2rem] bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30">
+                <h4 className="font-bold text-emerald-800 dark:text-emerald-400 mb-2">
+                  New to Bloom?
+                </h4>
+                <p className="text-sm text-emerald-700/80 dark:text-emerald-500/80 leading-snug">
+                  Your first 15 minutes are free to discuss your goals and
+                  learning style.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* --- MOBILE FLOATING ACTION BAR --- */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 border-t bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md z-50">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold text-muted-foreground uppercase">
+              Hourly Rate
+            </p>
+            <p className="text-xl font-black">${tutor.hourlyRate}</p>
+          </div>
+          <Button className="flex-1 h-12 rounded-xl font-bold bg-emerald-600 text-white">
+            Reserve Now
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

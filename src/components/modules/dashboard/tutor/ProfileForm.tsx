@@ -35,7 +35,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { createTutor, updateTutor } from "@/actions/tutor.Action";
-import { Category } from "@/types/category";
+import { Category } from "@/types/category.type";
 import { toast } from "sonner";
 
 const profileSchema = z.object({
@@ -72,7 +72,11 @@ export default function ProfileForm({
     onSubmit: async ({ value }) => {
       const res = isExist ? await updateTutor(value) : await createTutor(value);
 
-      if (!res.data?.success) {
+      if (res.error) {
+        toast.error(res.error.message);
+      }
+
+      if (!res.data.success) {
         toast.error(res.data.message);
       }
 

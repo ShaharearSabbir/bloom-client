@@ -2,15 +2,31 @@
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import TutorList from "@/components/modules/tutors/TutorList";
-import { getTutors } from "@/actions/tutor.Action";
+import { getFilterData, getTutors } from "@/actions/tutor.Action";
 import TutorFilters from "@/components/modules/tutors/TutorFilters";
+import { TutorSearchParams } from "@/validation/tutors.validation";
 
-export default async function TutorsPage() {
+export default async function TutorsPage({
+  searchParams,
+}: {
+  searchParams: Promise<TutorSearchParams>;
+}) {
+  const params = await searchParams;
+
   // Initial fetch for the first load
-  const response = await getTutors();
-  const initialTutors = response.data.success ? response.data.data : [];
+  const response = await getTutors(params);
 
-  console.log(initialTutors);
+  console.log(response);
+
+  const initialData = response.data?.tutors || [];
+  const meta = response.data?.meta || {
+    total: 0,
+    page: 1,
+    totalPages: 1,
+    limit: 10,
+  };
+
+  const filterDataPromise = getFilterData();
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -28,7 +44,7 @@ export default async function TutorsPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Client Side Filters */}
           <aside className="w-full lg:w-64 shrink-0">
-            <TutorFilters />
+            <TutorFilters filterDataPromise={filterDataPromise} />
           </aside>
 
           {/* Main List Section */}
@@ -40,7 +56,7 @@ export default async function TutorsPage() {
                 </div>
               }
             >
-              <TutorList initialData={initialTutors} />
+              <TutorList initialData={initialData} meta={meta} />
             </Suspense>
           </main>
         </div>
