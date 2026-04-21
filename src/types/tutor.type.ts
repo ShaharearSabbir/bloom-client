@@ -6,10 +6,21 @@ export interface Tutor {
   bio: string;
   avatarUrl?: string;
   category: string;
+  categoryId: string;
   hourlyRate: number;
   rating: number;
   totalReviews: number;
   isVerified?: boolean;
+  availability?: {
+    dayOfWeek: string;
+    startTime: string;
+    endTime: string;
+  }[];
+  upcomingBookings?: {
+    bookingDate: string;
+    endTime: string;
+    startTime: string;
+  }[];
 }
 
 export interface FilterData {

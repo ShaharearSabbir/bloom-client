@@ -31,13 +31,8 @@ import { DynamicBreadcrumbs } from "@/components/modules/dashboard/DynamicBreadc
 import Link from "next/link";
 import Logout from "@/components/modules/dashboard/Logout";
 import { redirect } from "next/navigation";
-
-export type NavItem = {
-  label: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  href: string;
-  isActive?: boolean;
-};
+import DashboardItem from "@/components/modules/dashboard/DashboardItem";
+import { NavItem } from "@/types/NavItem";
 
 type NavGroup = {
   title: string;
@@ -129,13 +124,10 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
             <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.href}>{item.label}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.items.map((item: NavItem) => {
+                  const { icon, ...rest } = item;
+                  return <DashboardItem key={item.label} item={rest} />;
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

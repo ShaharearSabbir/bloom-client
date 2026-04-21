@@ -78,7 +78,7 @@ export default function AvailabilityList({
     try {
       const res = await syncAvailabilityAction(payload);
 
-      if (res.success) {
+      if (res.data) {
         toast.success("Schedule updated successfully!");
 
         // Update local state with the confirmed, sorted data from the server
@@ -196,7 +196,7 @@ export default function AvailabilityList({
           <Button
             onClick={handleSave}
             disabled={isSaving || !isDirty}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 min-w-[160px] w-full sm:w-auto transition-all"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 min-w-40 w-full sm:w-auto transition-all"
           >
             {isSaving ? (
               <Loader2 className="w-4 h-4 animate-spin" />

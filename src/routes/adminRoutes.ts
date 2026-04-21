@@ -1,4 +1,5 @@
-import { NavItem } from "@/app/(dashboardLayout)/layout";
+
+import { NavItem } from "@/types/NavItem";
 import { LayoutDashboard } from "lucide-react";
 
 const adminRouteItems: NavItem[] = [

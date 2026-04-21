@@ -1,9 +1,11 @@
+import { Availability } from "@/types/availability.type";
+import { ServiceResponse } from "@/types/service.tye";
 import { cookies } from "next/headers";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
 export const AvailabilityService = {
-  async getByTutorId() {
+  getServices: async (): Promise<ServiceResponse<Availability[]>> => {
     const cookiesStore = await cookies();
     const response = await fetch(`${BACKEND_URL}/api/availabilities`, {
       method: "GET",

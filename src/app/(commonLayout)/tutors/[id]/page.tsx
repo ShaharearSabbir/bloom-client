@@ -7,7 +7,6 @@ import {
   Star,
   CheckCircle2,
   Clock,
-  BookOpen,
   ShieldCheck,
   MessageSquare,
   Globe,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { getTutorDetails } from "@/actions/tutor.Action";
+import BookingDialog from "@/components/modules/tutors/BookingDialog";
 
 export default async function TutorDetailsPage({
   params,
@@ -195,9 +195,7 @@ export default async function TutorDetailsPage({
                   </div>
 
                   <div className="space-y-3 pt-4">
-                    <Button className="w-full h-14 rounded-2xl text-lg font-bold bg-zinc-950 dark:bg-white dark:text-zinc-950 hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all">
-                      Book a Session
-                    </Button>
+                    <BookingDialog tutor={tutor} />
                     <Button
                       variant="outline"
                       className="w-full h-14 rounded-2xl text-lg font-bold border-2"

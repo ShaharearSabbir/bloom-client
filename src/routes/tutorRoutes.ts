@@ -1,4 +1,4 @@
-import { NavItem } from "@/app/(dashboardLayout)/layout";
+import { NavItem } from "@/types/NavItem";
 import {
   LayoutDashboard,
   CalendarClock,

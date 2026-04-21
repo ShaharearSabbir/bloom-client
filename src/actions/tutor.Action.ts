@@ -19,10 +19,10 @@ export const createTutor = async (
     }
     return {
       data: null,
-      error: { message: "Failed to create tutor" },
+      error: { message: result.message },
     };
   } catch (error) {
-    return { data: null, error: { message: "Failed to create tutor" } };
+    return { data: null, error: { message: "Failed to create tutor", error } };
   }
 };
 
@@ -37,7 +37,7 @@ export const updateTutor = async (
     }
     return {
       data: null,
-      error: { message: "Failed to update tutor" },
+      error: { message: result.message },
     };
   } catch (error) {
     return { data: null, error: { message: "Failed to update tutor", error } };
@@ -54,7 +54,7 @@ export const getMyTutor = async (): Promise<ActionResponse<Tutor>> => {
 
     return {
       data: null,
-      error: { message: "Failed to get my tutor" },
+      error: { message: result.message },
     };
   } catch (error) {
     return { data: null, error: { message: "Failed to get my tutor", error } };
@@ -73,7 +73,7 @@ export const getTutorDetails = async (
 
     return {
       data: null,
-      error: { message: "Failed to get tutor details" },
+      error: { message: result.message },
     };
   } catch (error) {
     return {
@@ -107,7 +107,7 @@ export const getTutors = async (searchParams: TutorSearchParams) => {
 
     return {
       data: null,
-      error: { message: "Failed to get tutors" },
+      error: { message: result.message },
     };
   } catch (error) {
     return { data: null, error: { message: "Failed to get tutors", error } };
@@ -125,7 +125,7 @@ export const getFilterData = async (): Promise<ActionResponse<FilterData>> => {
     return {
       data: null,
       error: {
-        message: "Failed to get filter data",
+        message: result.message,
       },
     };
   } catch (error) {

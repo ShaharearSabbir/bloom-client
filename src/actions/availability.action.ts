@@ -1,25 +1,38 @@
 "use server";
 
 import { AvailabilityService } from "@/services/availability.service";
+import { ActionResponse } from "@/types/action.type";
+import { Availability } from "@/types/availability.type";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 
-export async function getMyAvailabilityAction() {
+export async function getMyAvailabilityAction(): Promise<
+  ActionResponse<Availability[]>
+> {
   try {
-    const result = await AvailabilityService.getByTutorId();
-    return { success: true, data: result.data };
+    const result = await AvailabilityService.getServices();
+    if (!result.success) {
+      return { data: null, error: { message: result.message } };
+    }
+
+    return { data: result.data, error: null };
   } catch (error) {
-    return { success: false, error: "Could not load schedule" };
+    return { data: null, error: { message: "Could not load schedule" } };
   }
 }
 
-export async function syncAvailabilityAction(slots: any[]) {
+export async function syncAvailabilityAction(
+  slots: any[],
+): Promise<ActionResponse<Availability[]>> {
   try {
     const result = await AvailabilityService.syncSchedule(slots);
 
+    if (!result.success) {
+      return { data: null, error: { message: result.message } };
+    }
+
     revalidatePath("/dashboard/availability");
-    return { success: true, data: result.data };
+    return { data: result.data, error: null };
   } catch (error) {
-    return { success: false, error: "Could not save schedule" };
+    return { data: null, error: { message: "Could not save schedule" } };
   }
 }

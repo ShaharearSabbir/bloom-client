@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 export default async function AvailabilityPage() {
   // Fetch data on the server
   const response = await getMyAvailabilityAction();
-  const initialData = response.success ? response.data : [];
+  const initialData = response.data || [];
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
