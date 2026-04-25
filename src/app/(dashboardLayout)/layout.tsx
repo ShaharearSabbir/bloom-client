@@ -72,7 +72,9 @@ const sidebarData: SidebarData = {
           ? adminRouteItems
           : user.role === UserRole.TUTOR
             ? tutorRouteItems
-            : studentRouteItems,
+            : user.role === UserRole.STUDENT
+              ? studentRouteItems
+              : [],
     },
   ],
   footerGroup: {

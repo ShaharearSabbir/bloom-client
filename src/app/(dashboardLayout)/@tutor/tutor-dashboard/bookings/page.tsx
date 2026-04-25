@@ -5,7 +5,7 @@ import TutorBookingTable from "@/components/modules/dashboard/tutor/TutorBooking
 export default async function TutorBookingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const params = await searchParams;
   const page = parseInt(params.page as string) || 1;

@@ -1,4 +1,5 @@
 import { Category } from "@/types/category.type";
+import { Review } from "./review.type";
 
 export interface Tutor {
   id: string;
@@ -10,6 +11,7 @@ export interface Tutor {
   hourlyRate: number;
   rating: number;
   totalReviews: number;
+  reviews?: Review[];
   isVerified?: boolean;
   availability?: {
     dayOfWeek: string;

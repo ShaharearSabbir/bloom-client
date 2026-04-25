@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import BookingDialog from "./BookingDialog";
 
 interface TutorCardProps {
   tutor: {
@@ -91,12 +92,10 @@ export default function TutorCard({ tutor }: TutorCardProps) {
         <Button asChild variant="outline" className="flex-1 rounded-xl">
           <Link href={`/tutors/${tutor.id}`}>View Profile</Link>
         </Button>
-        <Button
-          asChild
+        <BookingDialog
+          tutor={tutor}
           className="flex-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white"
-        >
-          <Link href={`/tutors/${tutor.id}/book`}>Book Lesson</Link>
-        </Button>
+        />
       </CardFooter>
     </Card>
   );

@@ -71,4 +71,20 @@ export const bookingService = {
     );
     return response.json();
   },
+
+  joinSession: async (bookingId: string): Promise<ServiceResponse<Booking>> => {
+    const cookieStore = await cookies();
+    const allCookies = cookieStore.toString();
+    const response = await fetch(
+      `${BACKEND_URL}/api/bookings/${bookingId}/join-session`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: allCookies,
+        },
+      },
+    );
+    return response.json();
+  },
 };

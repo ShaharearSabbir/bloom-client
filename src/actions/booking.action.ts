@@ -29,7 +29,10 @@ export const createBooking = async (
   }
 };
 
-export const getUserBookings = async (page: number, limit: number): Promise<ActionResponse<Booking[]>> => {
+export const getUserBookings = async (
+  page: number,
+  limit: number,
+): Promise<ActionResponse<Booking[]>> => {
   try {
     const result = await bookingService.getUserBookings(page, limit);
     if (result.success) {
@@ -65,5 +68,19 @@ export const updateBookingStatus = async (
       data: null,
       error: { message: "Failed to update booking status", error },
     };
+  }
+};
+
+export const joinSession = async (
+  bookingId: string,
+): Promise<ActionResponse<Booking>> => {
+  try {
+    const result = await bookingService.joinSession(bookingId);
+    if (result.success) {
+      return { data: result.data, error: null };
+    }
+    return { data: null, error: { message: result.message } };
+  } catch (error) {
+    return { data: null, error: { message: "Failed to join session", error } };
   }
 };

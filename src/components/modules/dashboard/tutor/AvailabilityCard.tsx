@@ -21,12 +21,9 @@ const DAYS = [
   "Sunday",
 ];
 
-const TIME_SLOTS = Array.from({ length: 48 }).map((_, i) => {
-  const hour = Math.floor(i / 2)
-    .toString()
-    .padStart(2, "0");
-  const min = i % 2 === 0 ? "00" : "30";
-  return `${hour}:${min}`;
+const TIME_SLOTS = Array.from({ length: 24 }).map((_, i) => {
+  const hour = i.toString().padStart(2, "0");
+  return `${hour}:00`;
 });
 
 interface SlotProps {

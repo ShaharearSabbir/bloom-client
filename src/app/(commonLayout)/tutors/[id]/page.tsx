@@ -1,4 +1,3 @@
-// src/app/tutors/[id]/page.tsx
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +14,9 @@ import {
 import Link from "next/link";
 import { getTutorDetails } from "@/actions/tutor.Action";
 import BookingDialog from "@/components/modules/tutors/BookingDialog";
+import ReviewList from "@/components/modules/tutors/ReviewList";
+import AddReviewForm from "@/components/modules/tutors/AddReviewForm";
+import { Review } from "@/types/review.type";
 
 export default async function TutorDetailsPage({
   params,
@@ -22,8 +24,13 @@ export default async function TutorDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  // Parallel fetching for performance
   const tutorData = await getTutorDetails(id);
+
   const tutor = tutorData.data;
+
+  const reviews = tutor?.reviews;
 
   if (!tutor) {
     return (
@@ -106,9 +113,8 @@ export default async function TutorDetailsPage({
       {/* --- MAIN CONTENT GRID --- */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Side: Story & Expertise */}
+          {/* Left Column: Bio, Features, Reviews */}
           <div className="lg:col-span-8 space-y-12">
-            {/* Highlights Bento */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 rounded-xl border bg-zinc-50 dark:bg-zinc-900/50">
                 <p className="text-xs font-bold uppercase text-muted-foreground mb-1">
@@ -138,8 +144,8 @@ export default async function TutorDetailsPage({
 
             <section className="space-y-6">
               <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-                <div className="h-8 w-1 bg-emerald-500 rounded-full" />
-                The Mentorship Approach
+                <div className="h-8 w-1 bg-emerald-500 rounded-full" /> The
+                Mentorship Approach
               </h2>
               <div className="prose prose-zinc dark:prose-invert max-w-none">
                 <p className="text-lg leading-relaxed text-zinc-600 dark:text-zinc-400 whitespace-pre-line">
@@ -148,31 +154,11 @@ export default async function TutorDetailsPage({
               </div>
             </section>
 
-            {/* Teaching Features */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-              <div className="flex gap-4 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                <div className="h-10 w-10 shrink-0 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
-                  <Clock className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-base">Flexible Scheduling</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Book sessions that fit your timezone and lifestyle.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                <div className="h-10 w-10 shrink-0 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                  <MessageSquare className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-base">Direct Communication</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Get 24/7 support via built-in secure messaging.
-                  </p>
-                </div>
-              </div>
-            </section>
+            {/* REVIEW SECTIONS */}
+            <div className="border-t pt-12 space-y-12">
+              <ReviewList reviews={reviews as Review[]} />
+              <AddReviewForm tutorId={tutor.id} />
+            </div>
           </div>
 
           {/* Right Side: Booking Card */}
@@ -216,16 +202,6 @@ export default async function TutorDetailsPage({
                   </div>
                 </CardContent>
               </Card>
-
-              <div className="p-6 rounded-[2rem] bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30">
-                <h4 className="font-bold text-emerald-800 dark:text-emerald-400 mb-2">
-                  New to Bloom?
-                </h4>
-                <p className="text-sm text-emerald-700/80 dark:text-emerald-500/80 leading-snug">
-                  Your first 15 minutes are free to discuss your goals and
-                  learning style.
-                </p>
-              </div>
             </div>
           </div>
         </div>

@@ -35,7 +35,13 @@ const DAYS_MAP = [
   "Saturday",
 ];
 
-export default function BookingDialog({ tutor }: { tutor: any }) {
+export default function BookingDialog({
+  tutor,
+  className,
+}: {
+  tutor: any;
+  className?: string;
+}) {
   const [activeDate, setActiveDate] = useState<Date>(new Date());
   const [selectedSlots, setSelectedSlots] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -149,7 +155,13 @@ export default function BookingDialog({ tutor }: { tutor: any }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full h-14 rounded-2xl text-lg font-bold bg-zinc-950 dark:bg-white dark:text-zinc-950 hover:bg-emerald-600 transition-all">
+        <Button
+          className={
+            className
+              ? className
+              : " w-full h-14 rounded-2xl text-lg font-bold bg-zinc-950 dark:bg-white dark:text-zinc-950 hover:bg-emerald-600 transition-all"
+          }
+        >
           Book a Session
         </Button>
       </DialogTrigger>
