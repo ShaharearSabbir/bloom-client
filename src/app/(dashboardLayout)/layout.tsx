@@ -115,7 +115,7 @@ const SidebarLogo = ({ logo }: { logo: SidebarData["logo"] }) => {
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar {...props}>
-      <Link href={"/"}>
+      <Link href={"/"} className="cursor-pointer">
         <SidebarHeader>
           <SidebarLogo logo={sidebarData.logo} />
         </SidebarHeader>

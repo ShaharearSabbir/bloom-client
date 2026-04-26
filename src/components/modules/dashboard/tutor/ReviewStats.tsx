@@ -1,9 +1,14 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { TutorReview } from "@/types/review.type";
 import { Star, Users, MessageSquare } from "lucide-react";
 
-export default function ReviewStats() {
+export default function ReviewStats({
+  stats,
+}: {
+  stats: TutorReview["stats"];
+}) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <Card className="border-none shadow-sm bg-card">
@@ -15,7 +20,7 @@ export default function ReviewStats() {
             <p className="text-sm text-muted-foreground font-medium">
               Average Rating
             </p>
-            <h3 className="text-2xl font-bold">4.9 / 5.0</h3>
+            <h3 className="text-2xl font-bold">{stats.avgRating || 0}</h3>
           </div>
         </CardContent>
       </Card>
@@ -29,7 +34,7 @@ export default function ReviewStats() {
             <p className="text-sm text-muted-foreground font-medium">
               Total Reviews
             </p>
-            <h3 className="text-2xl font-bold">128</h3>
+            <h3 className="text-2xl font-bold">{stats.reviewCount || 0}</h3>
           </div>
         </CardContent>
       </Card>
@@ -43,7 +48,7 @@ export default function ReviewStats() {
             <p className="text-sm text-muted-foreground font-medium">
               Happy Students
             </p>
-            <h3 className="text-2xl font-bold">98%</h3>
+            <h3 className="text-2xl font-bold">{stats.happyStudents || 0}</h3>
           </div>
         </CardContent>
       </Card>

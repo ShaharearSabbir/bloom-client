@@ -19,6 +19,18 @@ const tutorService = {
     );
     return await tutors.json();
   },
+  getFeaturedTutors: async (): Promise<ServiceResponse<Tutor[]>> => {
+    const tutors = await fetch(
+      `${process.env.BACKEND_URL}/api/tutors/featured-tutors`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return await tutors.json();
+  },
 
   getMyTutor: async (): Promise<ServiceResponse<Tutor>> => {
     const cookiesStore = await cookies();

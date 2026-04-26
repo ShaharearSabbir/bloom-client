@@ -96,6 +96,7 @@ const LoginForm = () => {
                 <Input
                   id={field.name}
                   name={field.name}
+                  type="password"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="********"

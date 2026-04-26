@@ -12,6 +12,11 @@ const studentRouteItems: NavItem[] = [
     icon: LayoutDashboard,
     href: "/dashboard/bookings",
   },
+  {
+    label: "My Profile",
+    icon: LayoutDashboard,
+    href: "/dashboard/profile",
+  },
 ];
 
 export default studentRouteItems;

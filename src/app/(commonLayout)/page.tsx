@@ -6,7 +6,7 @@ import HowItWorks from "@/components/modules/home/HowItWorks";
 
 export default function Home() {
   return (
-    <div className="container mx-auto px-4 flex flex-col min-h-screen bg-white dark:bg-zinc-950">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-zinc-950">
       <Hero />
       <Categories />
       <HowItWorks />

@@ -20,6 +20,8 @@ function TutorFilters({
   const searchParams = useSearchParams();
   const filterData = use(filterDataPromise);
 
+  console.log({ filterData });
+
   const categories = filterData.data?.categories || [];
   const limitMin = filterData.data?.priceRange.min ?? 0;
   const limitMax = filterData.data?.priceRange.max ?? 100;

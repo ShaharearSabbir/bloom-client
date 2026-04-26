@@ -3,21 +3,33 @@
 import { Star, Reply } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { TutorReview } from "@/types/review.type";
+import Image from "next/image";
+import defaultUserImage from "@/assets/user.png";
 
-export default function ReviewCard({ review }: { review: any }) {
+export default function ReviewCard({
+  review,
+}: {
+  review: TutorReview["reviews"][0];
+}) {
   return (
     <Card className="border-none shadow-sm hover:shadow-md transition-shadow bg-card/50">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row justify-between gap-4">
           <div className="flex gap-4">
-            <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-700 font-bold">
-              {review.studentName[0]}
-            </div>
+            <Image
+              src={review.student.image || defaultUserImage}
+              alt={review.student.name}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-700 font-bold"
+            />
+
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-bold">{review.studentName}</h4>
+                <h4 className="font-bold">{review.student.name}</h4>
                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
-                  • {review.date}
+                  • {new Date(review.createdAt).toLocaleDateString()}
                 </span>
               </div>
               <div className="flex items-center gap-0.5 text-yellow-500">
@@ -31,14 +43,11 @@ export default function ReviewCard({ review }: { review: any }) {
               <p className="text-sm text-muted-foreground mt-2 leading-relaxed italic">
                 "{review.comment}"
               </p>
-              <p className="text-[10px] text-emerald-600 font-medium mt-1">
-                Topic: {review.subject}
-              </p>
             </div>
           </div>
 
           <div className="flex items-start">
-            <Button variant="outline" size="sm" className="gap-2 h-8 text-xs">
+            <Button disabled variant="outline" size="sm" className="gap-2 h-8 text-xs">
               <Reply className="w-3 h-3" /> Reply
             </Button>
           </div>

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Star } from "lucide-react";
 import { addReviewAction } from "@/actions/review.action";
-import { betterAuth } from "better-auth";
 import { auth } from "@/lib/auth-client";
 import { toast } from "sonner";
 

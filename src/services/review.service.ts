@@ -1,4 +1,4 @@
-import { Review } from "@/types/review.type";
+import { Review, TutorReview } from "@/types/review.type";
 import { ServiceResponse } from "@/types/service.tye";
 import { cookies } from "next/headers";
 
@@ -23,6 +23,23 @@ const reviewService = {
       body: JSON.stringify(payload),
     });
 
+    return response.json();
+  },
+
+  getTutorReviews: async (): Promise<ServiceResponse<TutorReview>> => {
+    const cookieStore = await cookies();
+    const allCookies = cookieStore.toString();
+
+    const response = await fetch(
+      `${BACKEND_URL}/api/reviews/my-tutor-reviews`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: allCookies,
+        },
+      },
+    );
     return response.json();
   },
 };

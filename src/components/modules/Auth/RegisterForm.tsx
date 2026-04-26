@@ -130,6 +130,7 @@ const RegisterForm = () => {
                 <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                 <Input
                   id={field.name}
+                  type="password"
                   name={field.name}
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -152,6 +153,7 @@ const RegisterForm = () => {
                 <Input
                   id={field.name}
                   name={field.name}
+                  type="password"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="********"

@@ -114,6 +114,23 @@ export const getTutors = async (searchParams: TutorSearchParams) => {
   }
 };
 
+export const getFeaturedTutors = async (): Promise<ActionResponse<Tutor[]>> => {
+  try {
+    const result = await tutorService.getFeaturedTutors();
+
+    if (result.success) {
+      return { data: result.data, error: null };
+    }
+
+    return {
+      data: null,
+      error: { message: result.message },
+    };
+  } catch (error) {
+    return { data: null, error: { message: "Failed to get tutors", error } };
+  }
+};
+
 export const getFilterData = async (): Promise<ActionResponse<FilterData>> => {
   try {
     const result = await tutorService.getFilterData();
