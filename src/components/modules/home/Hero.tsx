@@ -22,9 +22,11 @@ export default function Hero() {
               Find a Tutor
             </Button>
           </Link>
-          <Button size="lg" variant="outline" className="w-full sm:w-auto">
-            How it Works
-          </Button>
+          <Link href="#how-bloom-works">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto">
+              How it Works
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

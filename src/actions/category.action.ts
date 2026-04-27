@@ -26,9 +26,11 @@ export const createCategory = async (
   }
 };
 
-export const getCategories = async (): Promise<ActionResponse<Category[]>> => {
+export const getCategories = async (
+  limit?: number,
+): Promise<ActionResponse<Category[]>> => {
   try {
-    const result = await categoryService.getCategories();
+    const result = await categoryService.getCategories(limit);
     if (!result.success) {
       return {
         data: null,

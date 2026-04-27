@@ -4,15 +4,21 @@ import { cookies } from "next/headers";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
-
 const categoryService = {
-  getCategories: async (): Promise<ServiceResponse<Category[]>> => {
-    const categories = await fetch(`${BACKEND_URL}/api/categories`, {
-      method: "GET",
-    });
+  getCategories: async (
+    limit?: number,
+  ): Promise<ServiceResponse<Category[]>> => {
+    const categories = await fetch(
+      `${BACKEND_URL}/api/categories${limit ? `?limit=${limit}` : ""}`,
+      {
+        method: "GET",
+      },
+    );
     return await categories.json();
   },
-  createCategory: async (category: Omit<Category, "categoryId">): Promise<ServiceResponse<Category>> => {
+  createCategory: async (
+    category: Omit<Category, "categoryId">,
+  ): Promise<ServiceResponse<Category>> => {
     const cookiesStore = await cookies();
 
     const res = await fetch(`${BACKEND_URL}/api/categories`, {

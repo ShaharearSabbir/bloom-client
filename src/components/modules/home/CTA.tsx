@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function CTA() {
   return (
@@ -12,12 +13,14 @@ export default function CTA() {
             <p className="text-emerald-50 text-lg">
               Join thousands of students achieving their goals on Bloom.
             </p>
-            <Button
-              size="lg"
-              className="bg-white text-emerald-600 hover:bg-zinc-100 px-10 h-14 rounded-full font-bold text-lg"
-            >
-              Get Started for Free
-            </Button>
+            <Link href="/register">
+              <Button
+                size="lg"
+                className="bg-white text-emerald-600 hover:bg-zinc-100 px-10 h-14 rounded-full font-bold text-lg"
+              >
+                Get Started for Free
+              </Button>
+            </Link>
           </div>
           {/* Decorative Circle */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full -mr-20 -mt-20 opacity-50" />

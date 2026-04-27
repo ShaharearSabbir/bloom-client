@@ -53,11 +53,11 @@ export default function ProfileForm({
   categoryPromise: Promise<any>;
 }) {
   const result = use(tutorPromise);
-  const existingData = result?.data?.data;
+  const existingData = result?.data;
   const isExist = !!existingData;
 
   const categoryResult = use(categoryPromise);
-  const categories: Category[] = categoryResult?.data.data;
+  const categories = categoryResult.data;
 
   const form = useForm({
     defaultValues: {
@@ -70,17 +70,14 @@ export default function ProfileForm({
       onSubmit: profileSchema,
     },
     onSubmit: async ({ value }) => {
-      const res = isExist ? await updateTutor(value) : await createTutor(value);
+      const res = isExist ? await updateTutor(value) : await createTutor(value as any);
 
       if (res.error) {
         toast.error(res.error.message);
       }
 
-      if (!res.data.success) {
-        toast.error(res.data.message);
-      }
 
-      toast.success(res.data.message);
+      toast.success(`Profile ${isExist ? "updated" : "created"} successfully`);
     },
   });
 
