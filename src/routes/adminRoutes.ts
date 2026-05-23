@@ -1,4 +1,3 @@
-
 import { NavItem } from "@/types/NavItem";
 import { LayoutDashboard } from "lucide-react";
 
@@ -6,18 +5,23 @@ const adminRouteItems: NavItem[] = [
   {
     label: "Overview",
     icon: LayoutDashboard,
-    href: "admin-dashboard",
+    href: "/admin-dashboard",
     isActive: true,
   },
   {
     label: "Users",
     icon: LayoutDashboard,
-    href: "admin-dashboard/users",
+    href: "/admin-dashboard/users",
+  },
+  {
+    label: "Bookings",
+    icon: LayoutDashboard,
+    href: "/admin-dashboard/bookings",
   },
   {
     label: "Create Category",
     icon: LayoutDashboard,
-    href: "admin-dashboard/create-category",
+    href: "/admin-dashboard/create-category",
   },
 ];
 
