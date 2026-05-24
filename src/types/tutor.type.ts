@@ -32,3 +32,17 @@ export interface FilterData {
     max: number;
   };
 }
+
+export interface TutorStats {
+  totalStudent: number;
+  totalEarnings: number;
+  avgRating: number;
+  totalSessions: number;
+  upcomingBooking: {
+    id: string;
+    bookingDate: Date;
+    startTime: string;
+    categoryName: string;
+    studentName: string;
+  }[];
+}

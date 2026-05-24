@@ -2,7 +2,7 @@
 
 import studentService from "@/services/student.service";
 import { ActionResponse } from "@/types/action.type";
-import { Student } from "@/types/student.type";
+import { Student, StudentStats } from "@/types/student.type";
 import { revalidatePath } from "next/cache";
 
 export const getProfile = async (): Promise<ActionResponse<Student>> => {
@@ -14,6 +14,23 @@ export const getProfile = async (): Promise<ActionResponse<Student>> => {
     return { data: null, error: { message: result.message } };
   } catch (error) {
     return { data: null, error: { message: "Failed to get profile", error } };
+  }
+};
+
+export const getStudentStats = async (): Promise<
+  ActionResponse<StudentStats>
+> => {
+  try {
+    const result = await studentService.getStudentStats();
+    if (result.success) {
+      return { data: result.data, error: null };
+    }
+    return { data: null, error: { message: result.message } };
+  } catch (error) {
+    return {
+      data: null,
+      error: { message: "Failed to get student stats", error },
+    };
   }
 };
 

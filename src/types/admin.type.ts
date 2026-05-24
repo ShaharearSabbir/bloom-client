@@ -33,3 +33,9 @@ export interface Booking {
     name: string;
   };
 }
+
+export interface AdminStats {
+  totalStudents: number;
+  totalTutors: number;
+  totalBookings: number;
+}

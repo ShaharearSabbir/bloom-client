@@ -5,3 +5,14 @@ export interface Student {
   image: string | null;
   createdAt: Date;
 }
+
+export interface StudentStats {
+  bookingCount: number;
+  upcomingBooking: {
+    id: string;
+    bookingDate: Date;
+    startTime: string;
+    categoryName: string;
+    tutorName: string;
+  }[];
+}

@@ -1,5 +1,3 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +13,7 @@ import {
 } from "lucide-react";
 import { auth } from "@/lib/auth-client";
 import Link from "next/link";
+import { getStudentStats } from "@/actions/student.action";
 
 // Mock Data
 const upcomingSessions = [
@@ -34,10 +33,24 @@ const upcomingSessions = [
   },
 ];
 
-export default function StudentDashboardPage() {
-  const userData = auth.useSession();
+export default async function StudentDashboardPage() {
+  const sessionData = await auth.getSession();
 
-  const user = userData.data?.user;
+  const calculateSkillLevel = (bookingCount: number): string => {
+    if (bookingCount >= 20) return "Advanced";
+    if (bookingCount >= 10) return "Intermediate";
+    return "Beginner";
+  };
+
+  const user = sessionData.data?.user;
+
+  const statsData = await getStudentStats();
+
+  if (statsData.error) {
+    console.error("Error fetching student stats:", statsData.error);
+  }
+
+  const stats = statsData.data;
 
   return (
     <div className="container mx-auto px-4 py-12 space-y-8">
@@ -48,7 +61,8 @@ export default function StudentDashboardPage() {
             Welcome back, {user?.name || "user"}
           </h1>
           <p className="text-muted-foreground mt-1">
-            You have 2 sessions scheduled for this week.
+            You have {stats?.upcomingBooking.length || 0} sessions scheduled for
+            this week.
           </p>
         </div>
         <Link href={"/tutors"}>
@@ -59,106 +73,61 @@ export default function StudentDashboardPage() {
       </div>
 
       {/* --- STATS GRID --- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
         <StatCard
           title="Total Lessons"
-          value="142"
+          value={stats ? stats.bookingCount.toString() : "0"}
           icon={<BookOpen className="h-5 w-5 text-blue-500" />}
         />
         <StatCard
           title="Hours Learned"
-          value="84.5"
+          value={stats ? (stats.bookingCount * 1).toString() : "0"}
           icon={<Clock className="h-5 w-5 text-emerald-500" />}
         />
         <StatCard
           title="Skill Level"
-          value="Advanced"
+          value={stats ? calculateSkillLevel(stats.bookingCount) : "Beginner"}
           icon={<TrendingUp className="h-5 w-5 text-purple-500" />}
-        />
-        <StatCard
-          title="Certificates"
-          value="12"
-          icon={<Award className="h-5 w-5 text-amber-500" />}
         />
       </div>
 
       {/* --- MAIN CONTENT --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left: Upcoming Sessions */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="border-2 border-zinc-100 dark:border-zinc-800 rounded-[2rem] shadow-none">
-            <CardHeader>
-              <CardTitle className="text-2xl font-black">
-                Upcoming Sessions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {upcomingSessions.map((session) => (
-                <div
-                  key={session.id}
-                  className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-xl bg-white dark:bg-zinc-800 border flex items-center justify-center">
-                      <Calendar className="h-6 w-6 text-emerald-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg">{session.subject}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        with {session.tutor}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold">{session.time}</p>
-                    <Badge variant="secondary" className="mt-1 rounded-full">
-                      {session.status}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right: Messages / Sidebar */}
-        <div className="lg:col-span-1">
-          <Card className="border-2 border-zinc-100 dark:border-zinc-800 rounded-[2rem] shadow-none h-full">
-            <CardHeader>
-              <CardTitle className="text-2xl font-black">
-                Recent Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 group cursor-pointer"
-                >
-                  <Avatar>
-                    <AvatarImage
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`}
-                    />
-                    <AvatarFallback>T</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold">
-                      Tutor feedback received
-                    </p>
-                    <p className="text-xs text-muted-foreground">2 hours ago</p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              ))}
-              <Button
-                variant="ghost"
-                className="w-full text-emerald-600 font-bold"
+      <div className="lg:col-span-2 space-y-6">
+        <Card className="border-2 border-zinc-100 dark:border-zinc-800 rounded-[2rem] shadow-none">
+          <CardHeader>
+            <CardTitle className="text-2xl font-black">
+              Upcoming Sessions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {stats?.upcomingBooking?.map((session) => (
+              <div
+                key={session.id}
+                className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border"
               >
-                View All Messages
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-white dark:bg-zinc-800 border flex items-center justify-center">
+                    <Calendar className="h-6 w-6 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg">
+                      {session.categoryName}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      with {session.tutorName}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold">{session.startTime}</p>
+                  <Badge variant="secondary" className="mt-1 rounded-full">
+                    {"Confirmed"}
+                  </Badge>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

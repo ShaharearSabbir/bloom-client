@@ -12,12 +12,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight, Video, ArrowUpDown } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Video,
+  ArrowUpDown,
+  CircleX,
+} from "lucide-react";
 import { Booking } from "@/types/bookings.type";
 import { cn } from "@/lib/utils";
 import { isJoinable } from "@/utils/isJoinable";
 import { toast } from "sonner";
-import { joinSession } from "@/actions/booking.action";
+import { joinSession, updateBookingStatus } from "@/actions/booking.action";
 
 export default function MyBookingsClient({
   initialData,
@@ -130,26 +136,61 @@ export default function MyBookingsClient({
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right px-6">
-                      <Button
-                        onClick={() => handleJoin(booking.id)}
-                        size="sm"
-                        disabled={!canJoin || booking.status !== "CONFIRM"}
-                        className={cn(
-                          "rounded-xl font-bold transition-all",
-                          canJoin
-                            ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
-                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed",
-                        )}
-                      >
-                        <Video className="h-4 w-4 mr-2" />
-                        {canJoin ? "Join" : "Unavailable"}
-                      </Button>
+                      <div className="flex items-start justify-center gap-2">
+                        <div>
+                          <Button
+                            onClick={() => handleJoin(booking.id)}
+                            size="sm"
+                            disabled={!canJoin || booking.status !== "CONFIRM"}
+                            className={cn(
+                              "rounded-xl font-bold transition-all",
+                              canJoin
+                                ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
+                                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed",
+                            )}
+                          >
+                            <Video className="h-4 w-4 mr-2" />
+                          </Button>
 
-                      {!canJoin && (
-                        <p className="text-[10px] text-zinc-400 mt-1 uppercase font-bold">
-                          Opens 10m before
-                        </p>
-                      )}
+                          {!canJoin && (
+                            <p className="text-[10px] text-zinc-400 mt-1 uppercase font-bold">
+                              Opens 10m before
+                            </p>
+                          )}
+                        </div>
+                        <Button
+                          disabled={
+                            booking.status === "CONFIRM" ||
+                            booking.status === "COMPLETED" ||
+                            booking.status === "CANCELED"
+                          }
+                          onClick={async () => {
+                            const toastId = toast.loading(
+                              "Cancelling booking...",
+                            );
+                            const res = await updateBookingStatus(
+                              booking.id,
+                              "CANCELED",
+                            );
+
+                            console.log(res);
+
+                            if (res.data) {
+                              toast.success("Booking cancelled successfully.", {
+                                id: toastId,
+                              });
+                            } else {
+                              toast.error("Failed to cancel booking.", {
+                                id: toastId,
+                              });
+                            }
+                          }}
+                          variant="destructive"
+                          size="sm"
+                        >
+                          <CircleX />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );

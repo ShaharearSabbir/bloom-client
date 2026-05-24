@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getTutorStats } from "@/actions/tutor.Action";
+import { toast } from "sonner";
+import Link from "next/link";
 
 // Stat definition for the grid
 const stats = [
@@ -41,7 +44,18 @@ const stats = [
   },
 ];
 
-export default function TutorDashboard() {
+export default async function TutorDashboard() {
+  const tutorStatsData = await getTutorStats();
+
+  if (tutorStatsData.error) {
+    // toast.error(tutorStatsData.error.message || "Failed to load tutor stats");
+    console.error("Error fetching tutor stats:", tutorStatsData.error);
+  }
+
+  const tutorStats = tutorStatsData.data;
+
+  console.log(tutorStats);
+
   return (
     <div className="p-6 space-y-8 animate-in fade-in duration-500">
       {/* Header Section */}
@@ -59,19 +73,16 @@ export default function TutorDashboard() {
 
       {/* Stats Grid using Shadcn Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => (
-          <Card key={index} className="border-none shadow-sm bg-card">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.label}
-              </CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-            </CardContent>
-          </Card>
-        ))}
+        <StatCard name="Total Students" value={tutorStats?.totalStudent || 0} />
+        <StatCard name="Avg. Rating" value={tutorStats?.avgRating || 0} />
+        <StatCard
+          name="Total Earnings"
+          value={(tutorStats?.totalEarnings || 0).toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+          })}
+        />
+        <StatCard name="Sessions" value={tutorStats?.totalSessions || 0} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -84,38 +95,41 @@ export default function TutorDashboard() {
                 Upcoming Sessions
               </CardTitle>
               <CardDescription>
-                You have 2 sessions scheduled for today.
+                You have {tutorStats?.upcomingBooking?.length || 0} sessions
+                scheduled for today.
               </CardDescription>
             </div>
-            <Button variant="outline" size="sm" className="gap-1">
-              View All <ArrowUpRight className="h-3 w-3" />
-            </Button>
+            <Link href={"/tutor-dashboard/bookings"}>
+              <Button variant="outline" size="sm" className="gap-1">
+                View All <ArrowUpRight className="h-3 w-3" />
+              </Button>
+            </Link>
           </CardHeader>
           <CardContent className="space-y-4">
-            {[1, 2].map((i) => (
+            {tutorStats?.upcomingBooking?.map((booking) => (
               <div
-                key={i}
+                key={booking.id}
                 className="flex items-center justify-between p-4 rounded-lg border bg-accent/50 hover:bg-accent transition-colors"
               >
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold">
-                    {i === 1 ? "A" : "S"}
+                    {booking.studentName.charAt(0)}
                   </div>
                   <div>
                     <p className="text-sm font-semibold leading-none mb-1">
-                      {i === 1 ? "Alex Johnson" : "Sarah Williams"}
+                      {booking.studentName}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Next.js Development
+                      {booking.categoryName}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
                   <Badge variant="secondary" className="mb-1">
-                    {i === 1 ? "14:00" : "16:30"}
+                    {booking.startTime}
                   </Badge>
                   <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
-                    Today
+                    {booking.bookingDate.toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -167,3 +181,24 @@ export default function TutorDashboard() {
     </div>
   );
 }
+
+const StatCard = ({
+  name,
+  value,
+}: {
+  name: string;
+  value: number | string;
+}) => {
+  return (
+    <Card key={name} className="border-none shadow-sm bg-card">
+      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {name}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+      </CardContent>
+    </Card>
+  );
+};

@@ -1,6 +1,6 @@
 import { getTutorDetails } from "@/actions/tutor.Action";
 import { ServiceResponse } from "@/types/service.tye";
-import { FilterData, Tutor } from "@/types/tutor.type";
+import { FilterData, Tutor, TutorStats } from "@/types/tutor.type";
 import { TutorSearchParams } from "@/validation/tutors.validation";
 import { cookies } from "next/headers";
 
@@ -43,6 +43,18 @@ const tutorService = {
         },
       },
     );
+
+    return await tutors.json();
+  },
+  
+  getTutorStats: async (): Promise<ServiceResponse<TutorStats>> => {
+    const cookiesStore = await cookies();
+    const tutors = await fetch(`${process.env.BACKEND_URL}/api/tutors/stats`, {
+      method: "GET",
+      headers: {
+        Cookie: cookiesStore.toString(),
+      },
+    });
 
     return await tutors.json();
   },

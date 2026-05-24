@@ -120,20 +120,12 @@ export default function TutorBookingTable({
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right px-6">
-                  <Select
-                    defaultValue={booking.status}
-                    onValueChange={(val) => handleStatusChange(booking.id, val)}
+                  <Button
+                    disabled={booking.status !== "PENDING"}
+                    onClick={() => handleStatusChange(booking.id, "CONFIRM")}
                   >
-                    <SelectTrigger className="w-32 ml-auto rounded-xl font-bold bg-zinc-50 dark:bg-zinc-900 border-none">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl font-bold">
-                      <SelectItem value="PENDING">Pending</SelectItem>
-                      <SelectItem value="CONFIRM">Confirm</SelectItem>
-                      <SelectItem value="CANCELED">Cancel</SelectItem>
-                      <SelectItem value="COMPLETED">Complete</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    Confirm
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

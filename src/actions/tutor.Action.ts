@@ -2,7 +2,7 @@
 
 import tutorService from "@/services/tutor.service";
 import { ActionResponse } from "@/types/action.type";
-import { FilterData, Tutor } from "@/types/tutor.type";
+import { FilterData, Tutor, TutorStats } from "@/types/tutor.type";
 import {
   TutorSearchParams,
   tutorSearchSchema,
@@ -44,6 +44,25 @@ export const updateTutor = async (
   }
 };
 
+export const getTutorStats = async (): Promise<ActionResponse<TutorStats>> => {
+  try {
+    const result = await tutorService.getTutorStats();
+
+    if (result.success) {
+      return { data: result.data, error: null };
+    }
+
+    return {
+      data: null,
+      error: { message: result.message },
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: { message: "Failed to get tutor stats", error },
+    };
+  }
+};
 export const getMyTutor = async (): Promise<ActionResponse<Tutor>> => {
   try {
     const result = await tutorService.getMyTutor();

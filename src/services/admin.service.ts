@@ -1,5 +1,5 @@
 import { GetAllUserPayload } from "@/actions/admin.action";
-import { Booking, User, UserStatus } from "@/types/admin.type";
+import { AdminStats, Booking, User, UserStatus } from "@/types/admin.type";
 import { ServiceResponse } from "@/types/service.tye";
 import { cookies } from "next/headers";
 
@@ -45,6 +45,20 @@ const adminServices = {
         },
       },
     );
+
+    return await res.json();
+  },
+  getAdminStats: async (): Promise<ServiceResponse<AdminStats>> => {
+    const cookiesStore = await cookies();
+    const allCookies = cookiesStore.toString();
+
+    const res = await fetch(`${BACKEND_URL}/api/admin/stats`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: allCookies,
+      },
+    });
 
     return await res.json();
   },

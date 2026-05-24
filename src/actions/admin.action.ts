@@ -2,7 +2,7 @@
 
 import adminServices from "@/services/admin.service";
 import { ActionResponse } from "@/types/action.type";
-import { Booking, User, UserStatus } from "@/types/admin.type";
+import { AdminStats, Booking, User, UserStatus } from "@/types/admin.type";
 import { revalidatePath } from "next/cache";
 
 export interface GetAllUserPayload {
@@ -41,6 +41,24 @@ export const getAllBookings = async (
     return { data: null, error: { message: result.message } };
   } catch (error) {
     return { data: null, error: { message: "Failed to get users", error } };
+  }
+};
+
+export const getAdminStats = async (): Promise<ActionResponse<AdminStats>> => {
+  try {
+    const result = await adminServices.getAdminStats();
+
+    console.log(result);
+
+    if (result.success) {
+      return { data: result.data, error: null };
+    }
+    return { data: null, error: { message: result.message } };
+  } catch (error) {
+    return {
+      data: null,
+      error: { message: "Failed to get admin stats", error },
+    };
   }
 };
 
